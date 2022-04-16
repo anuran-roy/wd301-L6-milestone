@@ -17,7 +17,6 @@ import {
 
 import { formFieldType, updatePreviewAction } from "../types/formTypes";
 
-
 export default function Preview(props: { formId: number }) {
   const getForm: () => formDataType = () => {
     const localForm = getForms().filter((form) => form.id === props.formId)[0];
@@ -100,8 +99,11 @@ export default function Preview(props: { formId: number }) {
     saveResponse({ ...responseState, last_modified: new Date().toString() });
   }, [question, responseState]);
 
-  const reducer = (state: responseDataType, updateAction: updatePreviewAction) => {
-    switch(updateAction.type) {
+  const reducer = (
+    state: responseDataType,
+    updateAction: updatePreviewAction
+  ) => {
+    switch (updateAction.type) {
       case "update_text":
         return {
           ...state,
@@ -134,7 +136,10 @@ export default function Preview(props: { formId: number }) {
         return {
           ...state,
           formFields: state.formFields.map((field) => {
-            if (field.id !== updateAction.id || (field.kind !== "dropdown" && field.kind !== "radio")) {
+            if (
+              field.id !== updateAction.id ||
+              (field.kind !== "dropdown" && field.kind !== "radio")
+            ) {
               return field;
             } else {
               return {
@@ -161,11 +166,13 @@ export default function Preview(props: { formId: number }) {
       default:
         throw new Error("Unknown Action definition!");
     }
-  }
+  };
 
-  const dispatchPreview = (updateAction: updatePreviewAction)=> {
-    setResponseState((prevState: responseDataType) => reducer(prevState, updateAction));
-  }
+  const dispatchPreview = (updateAction: updatePreviewAction) => {
+    setResponseState((prevState: responseDataType) =>
+      reducer(prevState, updateAction)
+    );
+  };
 
   const renderField = (field: formFieldType) => {
     switch (field.kind) {

@@ -399,20 +399,18 @@ export default function Form(props: { formId: number }) {
                     formState={formState}
                     setFormStateCB={setFormState}
                     addOptionCB={(option: string, id: number) => {
-                      dispatchAction(
-                        {
-                          type: "add_option",
-                          option,
-                          id
-                        });
+                      dispatchAction({
+                        type: "add_option",
+                        option,
+                        id,
+                      });
                     }}
                     removeOptionCB={(option: string, id: number) => {
-                      dispatchAction(
-                        {
-                          type: "remove_option",
-                          option: option,
-                          field_id: id
-                        });
+                      dispatchAction({
+                        type: "remove_option",
+                        option: option,
+                        field_id: id,
+                      });
                     }}
                   />
                 );

@@ -565,8 +565,6 @@ export default function Form(props: { formId: number }) {
           </select>
           <div
             onClick={(_) => {
-              // addTextField(document.getElementById("fieldOptions")?.value);
-
               dispatchAction({
                 type: "add_field",
                 kind: "text",

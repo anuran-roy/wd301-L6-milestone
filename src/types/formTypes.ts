@@ -61,6 +61,33 @@ export type fieldKind =
   | "multiselect"
   | "textarea";
 
+
+export type updateText = {
+  type: "update_text";
+  updated_value: string;
+  id: number;
+}
+
+export type updateTextarea = {
+  type: "update_textarea";
+  updated_value: string;
+  id: number;
+}
+
+export type updateSelect = {
+  type: "update_select";
+  updated_value: string;
+  id: number;
+}
+
+export type updateMultiselect = {
+  type: "update_multiselect";
+  updated_value: string[];
+  id: number;
+}
+
+export type updatePreviewAction = updateText | updateTextarea | updateSelect | updateMultiselect;
+
 export function itemAt<T>(index: number, arr: T[]): T {
   return arr[index];
 }

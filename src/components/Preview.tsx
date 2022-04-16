@@ -15,7 +15,8 @@ import {
   MultiselectFieldInput,
 } from "./Preview/PreviewInput";
 
-import { formFieldType } from "../types/formTypes";
+import { formFieldType, updatePreviewAction } from "../types/formTypes";
+
 
 export default function Preview(props: { formId: number }) {
   const getForm: () => formDataType = () => {
@@ -99,123 +100,72 @@ export default function Preview(props: { formId: number }) {
     saveResponse({ ...responseState, last_modified: new Date().toString() });
   }, [question, responseState]);
 
-  const updateTextInput = (e_value: string, id: number) => {
-    // console.log(responseState);
-    // console.log(e_value);
-    if (responseState.formFields) {
-      setResponseState({
-        ...responseState,
-        formFields: responseState.formFields.map((field) => {
-          if (field.id !== id || field.kind !== "text") {
-            return field;
-          } else {
-            return {
-              ...field,
-              value: e_value,
-            };
-          }
-        }),
-      });
+  const reducer = (state: responseDataType, updateAction: updatePreviewAction) => {
+    switch(updateAction.type) {
+      case "update_text":
+        return {
+          ...state,
+          formFields: state.formFields.map((field) => {
+            if (field.id !== updateAction.id || field.kind !== "text") {
+              return field;
+            } else {
+              return {
+                ...field,
+                value: updateAction.updated_value,
+              };
+            }
+          }),
+        };
+      case "update_textarea":
+        return {
+          ...state,
+          formFields: responseState.formFields.map((field) => {
+            if (field.id !== updateAction.id || field.kind !== "textarea") {
+              return field;
+            } else {
+              return {
+                ...field,
+                value: updateAction.updated_value,
+              };
+            }
+          }),
+        };
+      case "update_select":
+        return {
+          ...state,
+          formFields: state.formFields.map((field) => {
+            if (field.id !== updateAction.id || (field.kind !== "dropdown" && field.kind !== "radio")) {
+              return field;
+            } else {
+              return {
+                ...field,
+                value: updateAction.updated_value,
+              };
+            }
+          }),
+        };
+      case "update_multiselect":
+        return {
+          ...state,
+          formFields: state.formFields.map((field) => {
+            if (field.id !== updateAction.id || field.kind !== "multiselect") {
+              return field;
+            } else {
+              return {
+                ...field,
+                value: updateAction.updated_value, // (() => updateValues(e_value, field.value))(),
+              };
+            }
+          }),
+        };
+      default:
+        throw new Error("Unknown Action definition!");
     }
-  };
+  }
 
-  const updateDropdownInput: (e_value: string, id: number) => void = (
-    e_value: string,
-    id: number
-  ) => {
-    if (responseState.formFields) {
-      setResponseState({
-        ...responseState,
-        formFields: responseState.formFields.map((field) => {
-          if (field.id !== id || field.kind !== "dropdown") {
-            return field;
-          } else {
-            return {
-              ...field,
-              value: e_value,
-            };
-          }
-        }),
-      });
-    }
-  };
-
-  const updateRadioInput: (e_value: string, id: number) => void = (
-    e_value: string,
-    id: number
-  ) => {
-    if (responseState.formFields) {
-      setResponseState({
-        ...responseState,
-        formFields: responseState.formFields.map((field) => {
-          if (field.id !== id || field.kind !== "radio") {
-            return field;
-          } else {
-            return {
-              ...field,
-              value: e_value,
-            };
-          }
-        }),
-      });
-    }
-  };
-
-  const updateValues: (
-    new_values: string[],
-    preexisting_values: string[]
-  ) => string[] = (new_values: string[], preexisting_values: string[]) => {
-    let new_arr: string[] = preexisting_values;
-    new_values.forEach((element) => {
-      if (!preexisting_values.includes(element)) {
-        new_values.push(element);
-      }
-    });
-
-    return new_arr;
-  };
-
-  const updateMultiselectInput: (e_value: string[], id: number) => void = (
-    e_value: string[],
-    id: number
-  ) => {
-    if (responseState.formFields) {
-      setResponseState({
-        ...responseState,
-        formFields: responseState.formFields.map((field) => {
-          if (field.id !== id || field.kind !== "multiselect") {
-            return field;
-          } else {
-            return {
-              ...field,
-              value: e_value, // (() => updateValues(e_value, field.value))(),
-            };
-          }
-        }),
-      });
-    }
-  };
-
-  const updateTextAreaInput: (e_value: string, id: number) => void = (
-    e_value: string,
-    id: number
-  ) => {
-    if (responseState.formFields) {
-      setResponseState({
-        ...responseState,
-        formFields: responseState.formFields.map((field) => {
-          if (field.id !== id || field.kind !== "textarea") {
-            return field;
-          } else {
-            return {
-              ...field,
-              value: e_value,
-            };
-          }
-        }),
-      });
-    }
-  };
+  const dispatchPreview = (updateAction: updatePreviewAction)=> {
+    setResponseState((prevState: responseDataType) => reducer(prevState, updateAction));
+  }
 
   const renderField = (field: formFieldType) => {
     switch (field.kind) {
@@ -227,7 +177,16 @@ export default function Preview(props: { formId: number }) {
             label={field.label}
             fieldType={field.fieldType}
             value={field.value}
-            updateTextInputCB={updateTextInput}
+            updateTextInputCB={
+              // updateTextInput
+              (e_value: string, fieldId: number) => {
+                dispatchPreview({
+                  type: "update_text",
+                  id: fieldId,
+                  updated_value: e_value,
+                });
+              }
+            }
           />
         );
       case "dropdown":
@@ -237,7 +196,13 @@ export default function Preview(props: { formId: number }) {
             label={field.label}
             options={field.options}
             value={field.value}
-            updateDropdownCB={updateDropdownInput}
+            updateDropdownCB={(e_value: string, fieldId: number) => {
+              dispatchPreview({
+                type: "update_select",
+                id: fieldId,
+                updated_value: e_value,
+              });
+            }}
           />
         );
       case "radio":
@@ -249,7 +214,13 @@ export default function Preview(props: { formId: number }) {
               options={field.options}
               value={field.value}
               // updateDropdownCB={updateDropdownInput}
-              updateRadioCB={updateRadioInput}
+              updateRadioCB={(e_value: string, fieldId: number) => {
+                dispatchPreview({
+                  type: "update_select",
+                  id: fieldId,
+                  updated_value: e_value,
+                });
+              }}
             />
           </div>
         );
@@ -262,7 +233,13 @@ export default function Preview(props: { formId: number }) {
             label={field.label}
             options={field.options}
             value={field.value}
-            updateMultiselectCB={updateMultiselectInput}
+            updateMultiselectCB={(e_value: string[], fieldId: number) => {
+              dispatchPreview({
+                type: "update_multiselect",
+                id: fieldId,
+                updated_value: e_value,
+              });
+            }}
           />
         );
 
@@ -273,7 +250,13 @@ export default function Preview(props: { formId: number }) {
               id={field.id}
               value={field.value}
               label={field.label}
-              updateTextAreaCB={updateTextAreaInput}
+              updateTextAreaCB={(e_value: string, fieldId: number) => {
+                dispatchPreview({
+                  type: "update_textarea",
+                  id: fieldId,
+                  updated_value: e_value,
+                });
+              }}
             />
           </div>
         );

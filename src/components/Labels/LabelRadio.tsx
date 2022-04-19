@@ -58,7 +58,7 @@ export function LabelRadio(props: {
           type="text"
           placeholder="Enter field label"
           value={props.label}
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             props.updateLabelCB(e.target.value, props.id);
           }}
         ></input>

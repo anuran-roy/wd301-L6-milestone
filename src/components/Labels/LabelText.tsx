@@ -10,7 +10,7 @@ export function LabelText(props: {
   fieldType: string;
   value: string;
   removeLabelCB: (id: number) => void;
-  updateLabelCB: (target: string, id: number) => any;
+  updateLabelCB: (target: string, id: number) => void;
 }) {
   return (
     <>
@@ -22,7 +22,7 @@ export function LabelText(props: {
           type="text"
           placeholder="Enter field label"
           value={props.label}
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             props.updateLabelCB(e.target.value, props.id);
           }}
         ></input>

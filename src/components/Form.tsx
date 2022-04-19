@@ -55,7 +55,7 @@ export default function Form(props: { formId: number }) {
   const [newField, dispatchNewFieldAction] = useReducer(newFieldReducer, "");
 
   const initialAutoSaveState: () => boolean = () => {
-    let prevAutoSaveState: any = localStorage.getItem("autoSave");
+    let prevAutoSaveState = localStorage.getItem("autoSave");
     let persistentAutoSaveState: boolean = prevAutoSaveState
       ? JSON.parse(prevAutoSaveState)
       : false;
@@ -532,7 +532,7 @@ export default function Form(props: { formId: number }) {
             placeholder="Enter new field name..."
             id="addTextFieldInput"
             value={newField}
-            onChange={(e: any) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               e.preventDefault();
               // console.log(e.target.value);
               dispatchNewFieldAction({

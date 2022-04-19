@@ -1,4 +1,4 @@
-// import React, { useState } from "react";
+import React from "react";
 
 export default function LabelledInput(props: {
   id: number;
@@ -6,8 +6,7 @@ export default function LabelledInput(props: {
   fieldType: string;
   value: string;
   removeFieldCB: (id: number) => void;
-  // InputFieldState: any;
-  updateFieldCB: (e: any, id: number) => any;
+  updateFieldCB: (e: string, id: number) => any;
 }) {
   return (
     <>
@@ -19,7 +18,7 @@ export default function LabelledInput(props: {
           type={props.fieldType}
           autoComplete="true"
           value={props.value}
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             props.updateFieldCB(e.target.value, props.id);
             // props.InputFieldState[props.id].value = e.target.value;
           }}

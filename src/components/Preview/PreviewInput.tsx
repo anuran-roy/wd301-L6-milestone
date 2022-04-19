@@ -17,7 +17,7 @@ export function TextFieldInput(props: {
           type={props.fieldType}
           autoComplete="true"
           value={props.value}
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             console.log(e.target.value);
             props.updateTextInputCB(e.target.value, props.id);
           }}
@@ -42,7 +42,7 @@ export function DropdownFieldInput(props: {
         <select
           className="mx-3 rounded-lg py-3 px-2"
           value={props.value}
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
             props.updateDropdownCB(e.target.value, props.id);
           }}
         >
@@ -91,7 +91,7 @@ export function RadioFieldInput(props: {
                 name={`radio-${props.id}`}
                 className="mx-3 py-3 px-2"
                 checked={radioOption === props.value}
-                onChange={(e: any) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   props.updateRadioCB(radioOption, props.id);
                 }}
               />
@@ -220,7 +220,7 @@ export function TextAreaInput(props: {
           id={`${props.id}`}
           className="my-3 border-2 py-3 px-2 text-gray-700 focus:text-gray-900"
           value={props.value}
-          onChange={(e: any) => {
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
             props.updateTextAreaCB(e.target.value, props.id);
           }}
         ></textarea>
